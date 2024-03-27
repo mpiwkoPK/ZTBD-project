@@ -64,44 +64,5 @@ merged_data.to_csv('dane/polaczone_dane.csv', index=False)
 
 
 
-# client = pymongo.MongoClient('localhost', 27017)
-# db = client['moja_baza_danych']
-# collection = db['moja_kolekcja']
-#
-# doc = {
-#   "set_number": "3010-1",
-#   "version": 1,
-#   "year": 2010,
-#   "theme_name": "Superman",
-#   "num_parts": 4051,
-#   "parts": [
-#     {
-#       "part_num": "399292",
-#       "name": "Triblock",
-#       "category_name": "Lego",
-#       "color": "green",
-#       "rgb": "#040292",
-#       "is_trans": True,
-#       "quantity": 5,
-#       "is_spare": False
-#     },
-#     {
-#       "part_num": "5678",
-#       "name": "Duoblock",
-#       "category_name": "Tools",
-#       "color": "blue",
-#       "rgb": "#522982",
-#       "is_trans": True,
-#       "quantity": 10,
-#       "is_spare": False
-#     }
-#   ]
-# }
-# collection.insert_one(doc)
-# print("Dokument został dodany do kolekcji.")
-
-
-
-
 
 
