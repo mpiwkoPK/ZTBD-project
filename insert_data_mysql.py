@@ -19,18 +19,30 @@ def create_table(cursor, table_name, columns):
     query = f"CREATE TABLE IF NOT EXISTS {table_name} ({column_str})"
     cursor.execute(query)
 
+def part_num_exists(cursor, part_num):
+    query = f"SELECT EXISTS(SELECT 1 FROM Parts WHERE Parts.part_num = %s)"
+    cursor.execute(query, (part_num,))
+    return cursor.fetchone()[0]
+
 # Funkcja do wczytywania danych z pliku CSV do bazy danych
-def load_data_from_csv(cursor, filename, tablename, columns):
+def load_data_from_csv(cursor, filename, tablename, columns, check_func=None):
     with open(filename, 'r', encoding='utf-8') as csvfile:
         csvreader = csv.reader(csvfile)
         next(csvreader)  # Pominięcie nagłówka w pliku CSV
         for row in csvreader:
-            placeholders = ', '.join(['%s'] * len(row))
-            query = f"INSERT INTO {tablename} VALUES ({placeholders})"
-            cursor.execute(query, row)
+            if not check_func or check_func(cursor, row[columns.index('part_num')]):
+                placeholders = ', '.join(['%s'] * len(row))
+                query = f"INSERT INTO {tablename} VALUES ({placeholders})"
+                cursor.execute(query, row)
         print(f"Dane z pliku {filename} zostały dodane do tabeli {tablename}.")
     
     connection.commit()
+
+
+
+def load_sets_part_data(cursor, filename):
+    load_data_from_csv(cursor, filename, 'Sets_part', ['inventory_id', 'part_num', 'color_id', 'quantity', 'is_spare'], part_num_exists)
+
 
 # Definicje tabel i ich kolumn
 tables = {
@@ -55,7 +67,8 @@ load_data_from_csv(cursor, 'dane/colors.csv', 'Colors', ['ID', 'name', 'rgb', 'i
 load_data_from_csv(cursor, 'dane/sets.csv', 'Sets', ['set_num', 'name', 'year', 'theme_id', 'num_parts'])
 load_data_from_csv(cursor, 'dane/parts.csv', 'Parts', ['part_num', 'name', 'part_cat_id'])
 load_data_from_csv(cursor, 'dane/inventories.csv', 'inventories', ['ID', 'version', 'set_num'])
-load_data_from_csv(cursor, 'dane/inventory_parts.csv', 'Sets_part', ['inventory_id', 'part_num', 'color_id', 'quantity', 'is_spare'])
+load_sets_part_data(cursor, 'dane/inventory_parts.csv')
+#load_data_from_csv(cursor, 'dane/inventory_parts.csv', 'Sets_part', ['inventory_id', 'part_num', 'color_id', 'quantity', 'is_spare'])
 
 end_time = time.time()
 execution_time = end_time - start_time
