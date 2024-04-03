@@ -1,9 +1,6 @@
 import mysql.connector
 import csv
 import time
-
-#TODO: pozbyć się błędu z konsoli:)))))))))))
-
 # Połączenie z bazą danych MySQL
 connection = mysql.connector.connect(
     host="localhost",
@@ -38,11 +35,8 @@ def load_data_from_csv(cursor, filename, tablename, columns, check_func=None):
     
     connection.commit()
 
-
-
 def load_sets_part_data(cursor, filename):
     load_data_from_csv(cursor, filename, 'Sets_part', ['inventory_id', 'part_num', 'color_id', 'quantity', 'is_spare'], part_num_exists)
-
 
 # Definicje tabel i ich kolumn
 tables = {
