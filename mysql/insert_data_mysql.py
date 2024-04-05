@@ -27,6 +27,12 @@ def load_data_from_csv(cursor, filename, tablename, columns, check_func=None):
         csvreader = csv.reader(csvfile)
         next(csvreader)  # Pominięcie nagłówka w pliku CSV
         for row in csvreader:
+            for i, val in enumerate(row):
+                if val == 'f':
+                    row[i] = 0
+                elif val == 't':
+                    row[i] = 1
+                    
             if not check_func or check_func(cursor, row[columns.index('part_num')]):
                 placeholders = ', '.join(['%s'] * len(row))
                 query = f"INSERT INTO {tablename} VALUES ({placeholders})"
@@ -42,7 +48,7 @@ def load_sets_part_data(cursor, filename):
 tables = {
     'Themes': ['ID INT PRIMARY KEY', 'name VARCHAR(100)', 'parent_id INT'],
     'Part_categories': ['ID VARCHAR(20) PRIMARY KEY', 'name VARCHAR(100)'],
-    'Colors': ['ID INT PRIMARY KEY', 'name VARCHAR(50)', 'rgb VARCHAR(10)', 'is_trans TINYINT'],
+    'Colors': ['ID INT PRIMARY KEY', 'name VARCHAR(50)', 'rgb VARCHAR(10)', 'is_trans BOOLEAN'],
     'Sets': ['set_num VARCHAR(20) PRIMARY KEY', 'name VARCHAR(100)', 'year INT', 'theme_id INT', 'num_parts INT', 'FOREIGN KEY (theme_id) REFERENCES Themes(ID)'],
     'Parts': ['part_num VARCHAR(20) PRIMARY KEY', 'name VARCHAR(100)', 'part_cat_id VARCHAR(20)', 'FOREIGN KEY (part_cat_id) REFERENCES Part_categories(ID)'],
     'inventories': ['ID INT PRIMARY KEY', 'version INT', 'set_num VARCHAR(20)', 'FOREIGN KEY (set_num) REFERENCES Sets(set_num)'],

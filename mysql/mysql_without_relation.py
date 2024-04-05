@@ -7,8 +7,7 @@ connection = mysql.connector.connect(host="localhost",
                                      user="root",
                                      db='lego_without_relation')
 
-
-# Funkcja do tworzenia tabeli
+#Funkcja do tworzenia tabeli
 def create_table():
     cursor = connection.cursor()
     create_table_query = """
@@ -31,7 +30,6 @@ def create_table():
         )
     """
     cursor.execute(create_table_query)
-
 
 # Funkcja do wstawiania danych z pliku CSV do tabeli
 def insert_data_from_csv():
