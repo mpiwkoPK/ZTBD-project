@@ -7,7 +7,7 @@ connection = psycopg2.connect(
     host="localhost",
     user="postgres",
     password="example",
-    database="lego"
+    database="lego_"
 )
 cursor = connection.cursor()
 
