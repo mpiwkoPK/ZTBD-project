@@ -1,25 +1,35 @@
-version: "3.7"
+version: '3'
 
 services:
   mongodb:
     image: mongo
     ports:
       - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      - app-network
 
   mysql:
-    image: mysql
-    ports:
-      - "3306:3306"
+    image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: example
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql:/docker-entrypoint-initdb.d  # Montujemy katalog z plikiem init.sql
+    networks:
+      - app-network
 
-  postgres:
-    image: postgres
+  postgresql:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: example
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: example
+    volumes:
+      - ./postgresql:/docker-entrypoint-initdb.d  # Montujemy katalog z plikiem init.sql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

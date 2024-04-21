@@ -2,12 +2,42 @@ import psycopg2
 import csv
 import time
 
+def create_database(database_name):
+    connection = None
+    try:
+        connection = psycopg2.connect(
+            host="localhost",
+            user="postgres",
+            password="example"
+        )
+        connection.autocommit = True  # Wyłączamy tryb transakcyjny
+
+        cursor = connection.cursor()
+
+        # Sprawdź, czy baza danych już istnieje
+        cursor.execute(f"SELECT 1 FROM pg_database WHERE datname = '{database_name}'")
+        exists = cursor.fetchone()
+
+        if not exists:
+            cursor.execute(f"CREATE DATABASE {database_name}")
+            print(f"Baza danych {database_name} została utworzona.")
+        else:
+            print(f"Baza danych {database_name} już istnieje.")
+    except psycopg2.Error as e:
+        print("Błąd podczas tworzenia bazy danych:", e)
+    finally:
+        if connection:
+            connection.close()
+
+# Utwórz bazę danych, jeśli nie istnieje
+create_database('lego')
+
 # Połączenie z bazą danych PostgreSQL
 connection = psycopg2.connect(
     host="localhost",
     user="postgres",
     password="example",
-    database="lego_"
+    database="lego"
 )
 cursor = connection.cursor()
 

@@ -2,10 +2,24 @@ import mysql.connector
 import csv
 import time
 
-# Połączenie z bazą danych
-connection = mysql.connector.connect(host="localhost",
-                                     user="root",
-                                     db='lego_without_relation')
+def create_database(cursor, database_name):
+    query = f"CREATE DATABASE IF NOT EXISTS {database_name}"
+    cursor.execute(query)
+    print(f"Baza danych {database_name} została utworzona lub już istnieje.")
+
+# Połączenie z bazą danych MySQL w kontenerze Docker
+connection = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="example",
+    port="3306"  # Port MySQL w kontenerze
+)
+
+# Tworzenie bazy danych, jeśli nie istnieje
+create_database(connection.cursor(), 'lego_without_relation')
+
+# Połączenie z bazą danych 'lego_without_relation'
+connection.database = 'lego_without_relation'
 
 #Funkcja do tworzenia tabeli
 def create_table():
@@ -30,6 +44,8 @@ def create_table():
         )
     """
     cursor.execute(create_table_query)
+    connection.commit()
+    print("Tabela LegoParts została utworzona lub już istnieje.")
 
 # Funkcja do wstawiania danych z pliku CSV do tabeli
 def insert_data_from_csv():
