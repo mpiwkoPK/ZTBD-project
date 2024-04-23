@@ -28,9 +28,9 @@ def check_mysql_connection():
 def check_postgresql_connection():
     try:
         connection = psycopg2.connect(
+            host="localhost",
             user="postgres",
             password="example",
-            host="localhost",
             port="5432",
             database="postgres"
         )
