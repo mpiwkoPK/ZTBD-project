@@ -82,6 +82,7 @@ tables = {
     'inventories': ['ID INT PRIMARY KEY', 'version INT', 'set_num VARCHAR(20)', 'FOREIGN KEY (set_num) REFERENCES Sets(set_num)'],
     'Sets_part': ['inventory_id INT', 'part_num VARCHAR(20)', 'color_id INT', 'quantity INT', 'FOREIGN KEY (inventory_id) REFERENCES inventories(ID)', 'FOREIGN KEY (part_num) REFERENCES Parts(part_num)', 'FOREIGN KEY (color_id) REFERENCES Colors(ID)', 'is_spare BOOLEAN']
 }
+
 # Definicje plików CSV dla każdej tabeli
 start_time = time.time()
 
