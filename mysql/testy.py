@@ -28,8 +28,10 @@ def schema(query):
     return items
 
 #funkcja do pobierania kolorów o parzystych ID - 10 rekordów
+#teraz juz funkcja do pobierania setow o parzystej liczbie czesci - 10 rekordow
 def get_even_colors():
-    query = "SELECT * FROM Colors WHERE ID % 2 = 0 LIMIT 10"
+    # query = "SELECT * FROM Colors WHERE ID % 2 = 0 LIMIT 10"
+    query = "SELECT * FROM Sets WHERE num_parts % 2 = 0 LIMIT 10"
     schema(query)
 count_time("parzystych ID kolorów limit 10", get_even_colors)
 
@@ -47,12 +49,14 @@ def get_sets():
 count_time("odczytania zestawów z poszczególnych lat", get_sets)
 
 #wszystkie części w zestawie o podanym numerze
+#TODO Zmienic inventory_id na set_number
 def get_parts():
     query = "SELECT p.part_num, p.name AS part_name, c.name AS category_name FROM Sets_part sp JOIN Parts p ON sp.part_num = p.part_num JOIN Part_categories c ON p.part_cat_id = c.id WHERE sp.inventory_id = 26;"
     schema(query)
 count_time("wszystkich części w zestawie o podanym nr", get_parts)
 
 # Odczytanie części z poszczególnych/konkretnej kategorii (setu)
+#TODO Mozliwe ze to jest to, co chcialem w poprzednim TODO, ale pogubilem sie troche z tymi selectami w relacyjnych, wiec trzeba spojrzec
 def get_part_from_set():
     query = "SELECT pc.name AS category_name, COUNT(DISTINCT p.part_num) AS num_parts FROM Part_categories pc JOIN Parts p ON pc.id = p.part_cat_id GROUP BY pc.name;"
     schema(query)

@@ -3,7 +3,7 @@ from pymongo import MongoClient
 import time
 
 #Wczytanie pliku ze zbiorem danych
-df = pd.read_csv('dane/polaczone_dane.csv')
+df = pd.read_csv('../dane/polaczone_dane.csv')
 
 client = MongoClient('localhost', 27017)
 db = client['ztbd_with_aggregation']

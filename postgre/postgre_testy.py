@@ -27,8 +27,10 @@ def schema(query):
     return items
 
 #funkcja do pobierania kolorów o parzystych ID - 10 rekordów
+#teraz juz funkcja do pobierania setow o parzystej liczbie czesci - 10 rekordow
 def get_even_colors():
-    query = "SELECT * FROM Colors WHERE ID % 2 = 0 LIMIT 10"
+    # query = "SELECT * FROM Colors WHERE ID % 2 = 0 LIMIT 10"
+    query = "SELECT * FROM Sets WHERE num_parts % 2 = 0 LIMIT 10"
     schema(query)
 count_time("parzystych ID kolorów limit 10", get_even_colors)
 
