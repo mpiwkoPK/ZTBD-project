@@ -24,6 +24,7 @@ def schema(query):
     query_string = f"{query}"
     cursor.execute(query_string)
     items = cursor.fetchall()
+    print(items)
     cursor.close()
     return items
 
@@ -51,9 +52,9 @@ count_time("odczytania zestawów z poszczególnych lat", get_sets)
 #wszystkie części w zestawie o podanym numerze
 #TODO Zmienic inventory_id na set_number
 def get_parts():
-    query = "SELECT p.part_num, p.name AS part_name, c.name AS category_name FROM Sets_part sp JOIN Parts p ON sp.part_num = p.part_num JOIN Part_categories c ON p.part_cat_id = c.id WHERE sp.inventory_id = 26;"
+    query = "SELECT p.part_num, p.name AS part_name, c.name AS category_name FROM Sets_part sp JOIN Parts p ON sp.part_num = p.part_num JOIN Part_categories c ON p.part_cat_id = c.id JOIN inventories i ON sp.inventory_id = i.ID JOIN Sets s ON i.set_num = s.set_num WHERE s.set_num = '0015-1';"
     schema(query)
-count_time("wszystkich części w zestawie o podanym nr", get_parts)
+count_time("TO SPRAWDZAM: wszystkich części w zestawie o podanym nr", get_parts)
 
 # Odczytanie części z poszczególnych/konkretnej kategorii (setu)
 #TODO Mozliwe ze to jest to, co chcialem w poprzednim TODO, ale pogubilem sie troche z tymi selectami w relacyjnych, wiec trzeba spojrzec
@@ -70,6 +71,43 @@ count_time("odczytania najpopularniejszych motywów", get_part_from_set)
 
 connection.autocommit = False
 
+# funkcja do aktualizowania kolorów o parzystych ID - 10 rekordów
+def update_even_colors():
+    query = "UPDATE Colors SET name = 'updated_color' WHERE ID % 2 = 0 LIMIT 10"
+    schema(query)
+count_time("aktualizacji parzystych ID kolorów limit 10", update_even_colors)
+
+# funkcja do aktualizowania wszystkich kolorów - 100 rekordów
+def update_colors():
+    query = "UPDATE Colors SET name = 'updated_color' LIMIT 100"
+    schema(query)
+count_time("aktualizacji wszystkich kolorów limit 100", update_colors)
+
+## skomplikowane update
+# aktualizacja zestawów z poszczególnych lat + sortowanie malejąco według liczby części 
+def update_sets():
+    query = "UPDATE Sets SET year = 2025 WHERE year = 2024;"
+    schema(query)
+count_time("aktualizacji zestawów z roku 2024 na rok 2025", update_sets)
+
+# aktualizacja części w zestawie o podanym numerze
+def update_parts():
+    query = "UPDATE Sets_part SET quantity = 10 WHERE inventory_id = 26;"
+    schema(query)
+count_time("aktualizacji ilości części w zestawie o podanym nr", update_parts)
+
+# Aktualizacja części z poszczególnych/konkretnej kategorii (setu)
+def update_part_from_set():
+    query = "UPDATE Parts SET name = 'updated_part_name' WHERE part_cat_id = 1;"
+    schema(query)
+count_time("aktualizacji nazw części z kategorii 1", update_part_from_set)
+
+# Aktualizacja tematów - zmiana nazw
+def update_theme():
+    query = "UPDATE Themes SET name = 'updated_theme_name' WHERE ID > 10;"
+    schema(query)
+count_time("aktualizacji nazw tematów o ID większym niż 10", update_theme)
+
 #delete
 def delete_records(num_records):
     query = f"DELETE FROM Sets_part LIMIT {num_records}"
@@ -77,6 +115,14 @@ def delete_records(num_records):
 count_time("usunięcia 10 rekordów: ", delete_records, 10)
 count_time("usunięcia 100 rekordów: ", delete_records, 100)
 count_time("usunięcia 1000 rekordów: ", delete_records, 1000)
+
+def delete_all_records(table_name):
+    query = f"DELETE FROM {table_name}"
+    schema(query)
+    print(f"Usunięto całą zawartość tabeli {table_name}")
+
+# Przykład użycia: usuń całą zawartość tabeli Sets_part
+delete_all_records("Sets_part")
 
 
 # Zamykanie połączenia
