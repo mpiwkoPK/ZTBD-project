@@ -10,7 +10,7 @@ inventory_sets = pd.read_csv('dane/inventory_sets.csv')
 part_categories = pd.read_csv('dane/part_categories.csv')
 parts = pd.read_csv('dane/parts.csv')
 sets = pd.read_csv('dane/sets.csv')
-themes = pd.read_csv('dane/themes.csv')
+themes = pd.read_csv('dane/Themes.csv')
 
 #Zmiana powtarzajacych sie nazw kolumn
 themes.rename(columns={'id': 'themes_id', 'name': 'themes_name'}, inplace = True)
