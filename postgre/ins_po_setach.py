@@ -3,41 +3,56 @@ import random
 import string
 import time
 
-def create_database(connection, cursor, database_name):
-    cursor.execute(f"SELECT 1 FROM pg_catalog.pg_database WHERE datname = '{database_name}'")
-    exists = cursor.fetchone()
-    if not exists:
-        cursor.execute(f"CREATE DATABASE {database_name}")
-        connection.commit()
-        print(f"Baza danych {database_name} została utworzona.")
-    else:
-        print(f"Baza danych {database_name} już istnieje.")
+def create_database(database_name):
+    connection = None
+    try:
+        connection = psycopg2.connect(
+            host="localhost",
+            user="postgres",
+            password="example"
+        )
+        connection.autocommit = True  # Wyłączamy tryb transakcyjny
 
+        cursor = connection.cursor()
+
+        # Sprawdź, czy baza danych już istnieje
+        cursor.execute(f"SELECT 1 FROM pg_database WHERE datname = '{database_name}'")
+        exists = cursor.fetchone()
+
+        if not exists:
+            cursor.execute(f"CREATE DATABASE {database_name}")
+            print(f"Baza danych {database_name} została utworzona.")
+        else:
+            print(f"Baza danych {database_name} już istnieje.")
+    except psycopg2.Error as e:
+        print("Błąd podczas tworzenia bazy danych:", e)
+    finally:
+        if connection:
+            connection.close()
+
+create_database('lego')
 # Połączenie z bazą danych PostgreSQL
 connection = psycopg2.connect(
-    dbname="postgres",
+    host="localhost",
     user="postgres",
     password="example",
-    host="localhost",
-    port="5432"
+    dbname="lego"
 )
+
 connection.autocommit = True
 cursor = connection.cursor()
 
-# Tworzenie bazy danych, jeśli nie istnieje
-create_database(connection, cursor, 'lego')
+# # Zamknięcie połączenia i ponowne otwarcie nowej bazy danych
+# cursor.close()
+# connection.close()
 
-# Zamknięcie połączenia i ponowne otwarcie nowej bazy danych
-cursor.close()
-connection.close()
-
-connection = psycopg2.connect(
-    host="localhost",
-    user="your_username",
-    password="your_password",
-    dbname="lego"  # Nazwa nowo utworzonej bazy danych
-)
-cursor = connection.cursor()
+# connection = psycopg2.connect(
+#     host="localhost",
+#     user="your_username",
+#     password="your_password",
+#     dbname="lego"  # Nazwa nowo utworzonej bazy danych
+# )
+# cursor = connection.cursor()
 
 # Funkcja do tworzenia tabeli w bazie danych
 def create_table(cursor, table_name, columns):
@@ -136,4 +151,10 @@ def generate_data(n):
     print(f"{n} rekordów zostało dodanych do bazy danych.")
 
 # Wprowadzenie n rekordów
-n = 5000  # Możesz zmienić wartość n na 10, 100, 1000 lub 5000
+n = 1000  # Możesz zmienić wartość n na 10, 100, 1000 lub 5000
+start_time = time.time()
+generate_data(n)
+end_time = time.time()
+
+execution_time = end_time - start_time
+print("Czas wykonania funkcji:", execution_time, "sekund")

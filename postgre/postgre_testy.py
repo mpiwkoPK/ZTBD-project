@@ -22,9 +22,9 @@ def count_time(text, function, *args):
 def schema(query):
     cursor = connection.cursor()
     cursor.execute(query)
-    items = cursor.fetchall()
+    #items = cursor.fetchall()
     cursor.close()
-    return items
+    #return items
 
 #funkcja do pobierania kolorów o parzystych ID - 10 rekordów
 #teraz juz funkcja do pobierania setow o parzystej liczbie czesci - 10 rekordow
@@ -82,7 +82,7 @@ count_time("odczytania najpopularniejszych motywów", get_part_from_set)
 def update_sets():
     query = "UPDATE Sets SET year = 2025 WHERE year = 2024;"
     schema(query)
-    count_time("aktualizacji zestawów z roku 2024 na rok 2025", update_sets)
+count_time("aktualizacji zestawów z roku 2024 na rok 2025", update_sets)
 
 # # aktualizacja części w zestawie o podanym numerze
 # def update_parts():
@@ -185,7 +185,7 @@ def update_many():
         cursor.close()
         connection.close()
 
-
+count_time("updaty:", update_many)
 #connection.autocommit = False
 
 #delete
@@ -193,9 +193,9 @@ def delete_records(num_records):
     query = f"DELETE FROM Sets_part WHERE inventory_id IN (SELECT inventory_id FROM Sets_part LIMIT {num_records})"
     cursor = connection.cursor()
     cursor.execute(query)
-count_time("usunięcia 10 rekordów: ", delete_records, 10)
-count_time("usunięcia 100 rekordów: ", delete_records, 100)
-count_time("usunięcia 1000 rekordów: ", delete_records, 1000)
+# count_time("usunięcia 10 rekordów: ", delete_records, 10)
+# count_time("usunięcia 100 rekordów: ", delete_records, 100)
+# count_time("usunięcia 1000 rekordów: ", delete_records, 1000)
 
 def delete_all_records(table_name):
     query = f"DELETE FROM {table_name}"
@@ -206,7 +206,7 @@ def delete_all_records(table_name):
     print(f"Usunięto całą zawartość tabeli {table_name}")
 
 # Przykład użycia: usuń całą zawartość tabeli Sets_part
-delete_all_records("Sets_part")
+#count_time("usunięcia 1000 rekordów: ", delete_all_records, "Sets_part")
 
 # Zamykanie połączenia
 connection.close()
